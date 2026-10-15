@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A premium weather dashboard powered by OpenWeather." />
+    <title>Aurora Weather</title>
+    <link rel="preconnect" href="https://openweathermap.org" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="app-shell" id="app">
+      <header class="site-header">
+        <a class="brand" href="#weather" aria-label="Aurora Weather home">
+          <span class="brand-mark" aria-hidden="true">☼</span>
+          <span>Aurora Weather</span>
+        </a>
+        <button class="icon-button nav-toggle" id="navToggle" aria-label="Open navigation" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+        <nav class="site-nav" id="siteNav" aria-label="Primary navigation">
+          <a href="#weather">Weather</a>
+          <a href="#forecast">Forecast</a>
+          <a href="#air-quality">Air Quality</a>
+          <a href="#locations">Locations</a>
+          <a href="#search">Search</a>
+          <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light and dark theme">
+            <span aria-hidden="true">◐</span>
+          </button>
+        </nav>
+      </header>
+
+      <main id="main">
+        <section class="search-band" id="search" aria-labelledby="searchTitle">
+          <div>
+            <p class="eyebrow">Live weather intelligence</p>
+            <h1 id="searchTitle">Accurate weather, beautifully presented.</h1>
+          </div>
+          <form class="search-form" id="searchForm" role="search">
+            <label class="sr-only" for="locationSearch">Search city or location</label>
+            <div class="search-control">
+              <span aria-hidden="true">⌕</span>
+              <input id="locationSearch" name="q" autocomplete="off" placeholder="Search city or location..." />
+              <button class="primary-button" type="submit">Search</button>
+            </div>
+            <div class="suggestions" id="suggestions" role="listbox" aria-label="Location suggestions"></div>
+          </form>
+          <button class="secondary-button" id="geoButton" type="button">Use My Location</button>
+        </section>
+
+        <div class="status-message" id="statusMessage" role="status" aria-live="polite"></div>
+
+        <section class="hero loading" id="weather" aria-labelledby="heroLocation">
+          <div class="hero-copy">
+            <p class="eyebrow" id="localDate">Loading local time</p>
+            <h2 id="heroLocation" class="skeleton-line">Loading weather</h2>
+            <p id="heroTime" class="muted">Fetching current conditions...</p>
+            <div class="temp-row">
+              <span class="current-temp" id="currentTemp">--°</span>
+              <img class="weather-icon" id="weatherIcon" alt="" />
+            </div>
+            <p class="condition" id="condition">Weather data is loading</p>
+            <p class="muted" id="feelsHighLow">Feels like -- · H: -- L: --</p>
+            <div class="hero-actions">
+              <button class="secondary-button" id="favoriteButton" type="button">☆ Save Location</button>
+              <button class="secondary-button" id="refreshButton" type="button">Refresh</button>
+              <div class="unit-toggle" role="group" aria-label="Temperature unit">
+                <button type="button" data-unit="metric" class="active">°C</button>
+                <button type="button" data-unit="imperial">°F</button>
+              </div>
+            </div>
+            <p class="last-updated" id="lastUpdated">Last updated: --</p>
+          </div>
+          <div class="hero-panel" aria-label="Weather summary">
+            <div class="metric-ring">
+              <span id="summaryTemp">--°</span>
+              <small id="summaryCondition">Current</small>
+            </div>
+            <div class="mini-stat">
+              <span>Clouds</span><strong id="cloudSummary">--</strong>
+            </div>
+            <div class="mini-stat">
+              <span>Visibility</span><strong id="visibilitySummary">--</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="metrics-grid" id="overview" aria-label="Weather overview"></section>
+
+        <section class="panel" id="forecast" aria-labelledby="hourlyTitle">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Next hours</p>
+              <h2 id="hourlyTitle">Hourly Forecast</h2>
+            </div>
+          </div>
+          <div class="hourly-strip" id="hourlyForecast" tabindex="0" aria-label="Scrollable hourly forecast"></div>
+        </section>
+
+        <section class="split-layout">
+          <div class="panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Outlook</p>
+                <h2>5-Day Forecast</h2>
+              </div>
+            </div>
+            <div class="daily-list" id="dailyForecast"></div>
+          </div>
+
+          <div class="panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Rain and snow</p>
+                <h2>Precipitation</h2>
+              </div>
+            </div>
+            <div id="precipitation"></div>
+          </div>
+        </section>
+
+        <section class="split-layout">
+          <div class="panel" id="windPanel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Movement</p>
+                <h2>Wind</h2>
+              </div>
+            </div>
+            <div class="wind-layout">
+              <div class="compass" id="windCompass"><span></span></div>
+              <div>
+                <p class="big-number" id="windSpeed">--</p>
+                <p class="muted" id="windDetail">Wind data unavailable</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Daylight</p>
+                <h2>Sunrise & Sunset</h2>
+              </div>
+            </div>
+            <div class="sun-track" aria-hidden="true"><span id="sunPosition"></span></div>
+            <div class="sun-grid">
+              <div><span>Sunrise</span><strong id="sunrise">--</strong></div>
+              <div><span>Sunset</span><strong id="sunset">--</strong></div>
+              <div><span>Day length</span><strong id="dayLength">--</strong></div>
+              <div><span>Status</span><strong id="dayStatus">--</strong></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" id="air-quality" aria-labelledby="airTitle">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Atmosphere</p>
+              <h2 id="airTitle">Air Quality</h2>
+            </div>
+          </div>
+          <div class="aqi-layout">
+            <div class="aqi-badge" id="aqiBadge">--</div>
+            <div>
+              <h3 id="aqiStatus">Air quality unavailable</h3>
+              <p class="muted" id="aqiExplanation">Air quality data will appear when available from OpenWeather.</p>
+              <div class="pollutants" id="pollutants"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel map-panel" aria-labelledby="mapTitle">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Map layers</p>
+              <h2 id="mapTitle">Weather Map</h2>
+            </div>
+          </div>
+          <div class="map-placeholder">
+            <p>OpenWeather map layers for temperature, precipitation, clouds, and wind can be connected here without changing the dashboard architecture.</p>
+          </div>
+        </section>
+
+        <section class="split-layout" id="locations">
+          <div class="panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Saved</p>
+                <h2>Favorite Locations</h2>
+              </div>
+            </div>
+            <div id="favorites" class="location-list"></div>
+          </div>
+          <div class="panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">History</p>
+                <h2>Recent Searches</h2>
+              </div>
+              <button class="text-button" id="clearRecent" type="button">Clear</button>
+            </div>
+            <div id="recentSearches" class="location-list"></div>
+          </div>
+        </section>
+
+        <section class="about" id="about">
+          <p class="eyebrow">About Aurora Weather</p>
+          <h2>Accurate weather information, beautifully presented.</h2>
+          <p>Aurora Weather uses OpenWeather data to provide current conditions, forecasts, air quality, and related weather context in a calm, readable dashboard.</p>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <div class="brand"><span class="brand-mark" aria-hidden="true">☼</span><span>Aurora Weather</span></div>
+        <p>Weather data powered by <a href="https://openweathermap.org/" rel="noreferrer">OpenWeather</a>.</p>
+        <nav aria-label="Footer navigation">
+          <a href="#weather">Weather</a>
+          <a href="#forecast">Forecast</a>
+          <a href="#air-quality">Air Quality</a>
+          <a href="#locations">Locations</a>
+          <a href="#about">About</a>
+          <a href="#privacy">Privacy</a>
+          <a href="#terms">Terms</a>
+        </nav>
+        <p>© <span id="copyrightYear"></span> Aurora Weather.</p>
+      </footer>
+    </div>
+    <script src="config.js"></script>
+    <script type="module" src="src/app.js"></script>
+  </body>
+</html>
